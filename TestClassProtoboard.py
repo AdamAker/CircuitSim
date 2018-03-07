@@ -33,6 +33,8 @@ print(D)
 G=M.domain(0,.01,1)
 print(G)
 
+wire1=cm.Wire()
+
 #test loop class
 loop1=cm.Loop()
 loop1.setloopsz(2,2,4,2)
@@ -45,12 +47,7 @@ w=loop2.getloopsz()
 print(w)
 b.drawloop(loop2,"red")
 b.drawwire(14,20,12,0,"horz","green")
-b.erase()
-b=pb.Protoboard()
-b.regrid(n,m)
-b.setboard()
-b.drawloop(loop1,"black")
-b.drawwire(14,20,12,0,"horz","green")
+
 
 #testing components
 r1=cm.Component()
@@ -79,10 +76,18 @@ scope.settrig(4,h)
 trig=[True,True,True,True]
 color=["yellow","cyan","green","red"]
 linetype=["--","-.","-",":"]
-chon=[True,True,False,True]
+chon=[True,True,True,True]
 scope.setscreen("us","mV",1.5, trig,color,linetype,chon)
 scope.getscreen()
 
+#testing the redrawing capability
+
+b=pb.Protoboard()
+b.regrid(n,m)
+b.setboard()
+b.drawloop(loop1,"black")
+b.drawwire(14,20,12,0,"horz","green")
+scope.getscreen()
 
 #testing resistor
 r2=cm.Resistor()
