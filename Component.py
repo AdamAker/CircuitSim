@@ -101,7 +101,17 @@ class Capacitor(Component):
          s=self.getchar()
          return s[2]
     #end getR
-
+     
+     #set vmax for capacitor
+    def setvmax(self, vmax):
+         self.vmax=vmax
+    #end setvmax
+     
+    #get vmax for capacitor
+    def getvmax(self):
+         return self.vmax
+    #end getvmax
+     
 ##--Inductor subclass--##
 
 class Inductor(Component):
@@ -135,9 +145,9 @@ class VoltageSource(Component):
     
     def setvsinu(self, Vpp, type, f):
           if type == "cos":
-               self.source=[Vpp*cos(2*(3.141592654)*f*t) for t in range(1000)]
+               self.source=[Vpp*np.cos(2*(3.141592654)*f*t) for t in range(1000)]
           elif type == "sin":
-               self.source=[Vpp*sin(2*(3.141592654)*f*t) for t in range(1000)]
+               self.source=[Vpp*np.sin(2*(3.141592654)*f*t) for t in range(1000)]
           else:
                print("type is not sinusoidal")
     #end setv
@@ -189,7 +199,7 @@ class Wire(Component):
      def __init__(self):
           self.vert1=[0,0]
           self.vert2=[0,1]
-          self.orient="horiz"
+          self.orient="horz"
           self.comps=[]
      #end __init__
      
@@ -198,9 +208,8 @@ class Wire(Component):
           x0=int(x0)
           y0=int(y0)
           n=int(n)
-          m=int(m)
           self.vert1=[x0,y0]
-          if orient == "horiz":
+          if orient == "horz":
                self.vert2=[x0+n,y0]
           elif orient == "vert":
                self.vert2=[x0,y0+n]
@@ -209,18 +218,27 @@ class Wire(Component):
           #end if
      #end setwiresz
      
+     def getwiresz(self):
+          return [self.vert1, self.vert2]
+     #end getwiresz
+     
+     def getorient(self):
+          return self.orient
+     #end getorient
+     
      #add a component to the wire
-     def addcomp(self,obj):
-          s=obj.getpos()
-          if self.orient == "horiz":
+     def addcomp(self,obj1,obj2,x,y):
+          obj1.setpos(obj2,x,y)
+          s=obj1.getpos()
+          if self.orient == "horz":
                if s[0]>=self.vert1[0] and s[0]<=self.vert2[0] and s[1]==self.vert1[1]:
-                    self.comps.append(obj)
+                    self.comps.append(obj1)
                else:
                     print("Component outside of range")
                #end if
           elif self.orient == "vert":
                if s[0]==self.vert1[0] and s[1]>=self.vert1[1] and s[1]<=self.vert2[1]:
-                    self.comps.append(obj)
+                    self.comps.append(obj1)
                else:
                     print("Component outside of range")
                #end if
@@ -238,68 +256,3 @@ class Wire(Component):
                print("wire has less than two elements")
           #end if
      #end swapcomp
-     
-     #sorts the wire according the the xy-position of the component 
-     #for example: it sorts from least to greates if ltg is true
-     #and according to the x coordinates of components if orient is "horiz"
-     def sortwire(self,ltg):
-          gtl = not ltg
-          if len(self.comps)>2:
-               if self.orient == "horiz" and ltg:
-                    swap = True
-                    while swap:
-                         swap = False
-                         for k in range(len(self.comps)):
-                              a=self.comps[k+1].getpos()
-                              b=self.comps[k].getpos()
-                              if a[0]<b[0]:
-                                   self.swapcomp[k+1,k]
-                                   swap = True
-                              #end if
-                         #end for
-                    #end while
-               #end if
-               elif self.orient == "vert" and ltg:
-                    swap = True
-                    while swap:
-                         swap = False
-                         for k in range(len(self.comps)):
-                              a=self.comps[k+1].getpos()
-                              b=self.comps[k].getpos()
-                              if a[1]<b[1]:
-                                   self.swapcomp[k+1,k]
-                                   swap = True
-                              #end if
-                         #end for
-                    #end while
-               #end if
-               elif self.orient =="horiz" and gtl:
-                    swap = True
-                    while swap:
-                         swap = False
-                         for k in range(len(self.comps)):
-                              a=self.comps[k+1].getpos()
-                              b=self.comps[k].getpos()
-                              if a[0]>b[0]:
-                                   self.swapcomp[k+1,k]
-                                   swap = True
-                              #end if
-                         #end for
-                    #end while
-               #end if
-               elif self.orient == "vert" and gtl:
-                    swap = True
-                    while swap:
-                         swap = False
-                         for k in range(len(self.comps)):
-                              a=self.comps[k+1].getpos()
-                              b=self.comps[k].getpos()
-                              if a[1]>b[1]:
-                                   self.swapcomp[k+1,k]
-                                   swap = True
-                              #end if
-                         #end for
-                    #end while
-               #end if
-          #end if
-     #end sortwire

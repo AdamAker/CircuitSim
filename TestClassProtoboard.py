@@ -46,8 +46,6 @@ loop2.setloopsz(6,4,8,8)
 w=loop2.getloopsz()
 print(w)
 b.drawloop(loop2,"red")
-b.drawwire(14,20,12,0,"horz","green")
-
 
 #testing components
 r1=cm.Component()
@@ -57,6 +55,33 @@ posr1=r1.getpos()
 print(posr1[0],posr1[1])
 cr1=r1.getchar()
 print(cr1[0],cr1[1],cr1[2])
+
+#testing loop
+V1=cm.VoltageSource()
+V1.setvsinu(2,"cos",60)
+V1.setpos(b,5,5)
+
+r2=cm.Resistor()
+r2.setpmax(10)
+r2.setpos(b,10,10)
+r2.setR(10)
+
+c1=cm.Capacitor()
+c1.setvmax(30)
+c1.setpos(b,15,15)
+c1.setC(10e-6)
+
+l1=cm.Inductor()
+l1.setpos(b,20,20)
+l1.setL(10e-3)
+
+wire1=cm.Wire()
+wire1.setwiresz(8,15,10,"horz")
+wire1.addcomp(V1,b,10,15)
+wire1.addcomp(r2,b,9,15)
+wire1.addcomp(l1,b,11,15)
+wire1.addcomp(c1,b,17,15)
+b.drawwire(wire1,"horz","red")
 
 #testing oscilloscope
 scope=osc.Oscilloscope()
@@ -82,16 +107,15 @@ scope.getscreen()
 
 #testing the redrawing capability
 
-b=pb.Protoboard()
-b.regrid(n,m)
-b.setboard()
-b.drawloop(loop1,"black")
-b.drawwire(14,20,12,0,"horz","green")
-scope.getscreen()
+#b=pb.Protoboard()
+#b.regrid(n,m)
+#b.setboard()
+#b.drawloop(loop1,"black")
+#b.drawwire(14,20,12,0,"horz","green")
+#scope.getscreen()
 
-#testing resistor
-r2=cm.Resistor()
-r2.setpmax(10)
-print(r2.getpmax())
+
+
+
 
 

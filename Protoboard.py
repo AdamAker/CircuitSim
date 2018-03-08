@@ -106,14 +106,16 @@ class Protoboard(object):
     #end drawloop
     
     #draws a horizontal or vertical wire on the protoboard
-    def drawwire(self,x0,xf,y0,yf,orient,color):
+    def drawwire(self,obj,orient,color):
          M=mp.Matpy()
+         orient=obj.getorient()
+         v=obj.getwiresz()
          if orient == "vert":
-               yline=M.domain(y0,.01,yf)
-               xline=[x0 for i in range(len(yline))]
+               yline=M.domain(v[0][1],.01,v[1][1])
+               xline=[v[0][0] for i in range(len(yline))]
          elif orient == "horz":
-               xline=M.domain(x0,.01,xf)
-               yline=[y0 for i in range(len(xline))]
+               xline=M.domain(v[0][0],.01,v[1][0])
+               yline=[v[0][1] for i in range(len(xline))]
          else:
                print("Not a valid orientation")
          #end if
@@ -139,6 +141,6 @@ class Protoboard(object):
     #erases entire protoboard
     def erase(self):
           self.ax.remove()
-    #end erase
+    #end erase  
     
 #endprotoboard
