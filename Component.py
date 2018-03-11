@@ -160,16 +160,22 @@ class VoltageSource(Component):
 class Loop(Component):
 
      #inialize loop
-     def __init__(self):
-          self.vert1=[0,0]
-          self.vert2=[1,0]
-          self.vert3=[1,1]
-          self.vert4=[0,1]
-          self.wire1=Wire()
-          self.wire2=Wire()
-          self.wire3=Wire()
-          self.wire4=Wire()
-          self.loop={1:self.wire1, 2:self.wire2, 3:self.wire3, 4:self.wire4}
+     def __init__(self,obj1,obj2,obj3,obj4):
+          s1=obj1.getwiresz()
+          s3=obj3.getwiresz()
+          self.vert1=s1[0]
+          self.vert2=s1[1]
+          self.vert3=s3[0]
+          self.vert4=s3[1]
+          wire1=obj1.getcompstr()
+          wire2=obj2.getcompstr()
+          wire3=obj3.getcompstr()
+          wire4=obj4.getcompstr()
+          self.loop={1:obj1, 2:obj2, 3:obj3, 4:obj4}
+          self.loopstr={1:wire1, 2:wire2, 3:wire3, 4:wire4}
+          self.R=0
+          self.L=0
+          self.C=0
      #end __init__
 
      #resizes and repositions the loop (based on self.vert1)
@@ -182,25 +188,68 @@ class Loop(Component):
           self.vert2=[x0+n,y0]
           self.vert3=[x0+n,y0+m]
           self.vert4=[x0,y0+m]
+          obj1.setwiresz(x0,y0,n,"horz")
+          obj2.setwiresz((x0+n),y0,m,"vert")
+          obj3.setwiresz((x0+n),(y0+m),-1*n,"horz")
+          obj4.setwiresz(x0,(y0+m),-1*m,"vert")
           
      #end setloopsz
      
+     #searches the loop for components
+     def searchloop(self):
+          for i in range(4):
+               l=self.loopstr[i+1]
+               for j in range(len(l)):
+                    if self.loopstr[i+1][j]=="R":
+                         self.R=self.R+self.loop[i+1].comps[j].getR()
+                    elif self.loopstr[i+1][j]=="L":
+                         self.L=self.L+self.loop[i+1].comps[j].getL()
+                    elif self.loopstr[i+1][j]=="C":
+                         if self.C == 0:
+                              self.C=self.loop[i+1].comps[j].getC()
+                         else:
+                              self.C=1/(1/(self.C)+1/(self.loop[i+1].comps[j].getC()))
+                         #end if
+                    #end if
+               #end for     
+          #end for
+          return [self.R, self.L, self.C]
+     #end search loop
+     
+     #gets loop verticies
      def getloopsz(self):
           return [self.vert1,self.vert2,self.vert3,self.vert4]
      #end getloopsz
      
+     def getloopstr(self):
+          return self.loopstr
+     #end getloopstr
      
+     def getloop(self):
+          return self.loop
+     #end getloop  
      
- ##--Wire subclass--##
+##--Wire subclass--##
      
 class Wire(Component):
 
      #initialize wire
-     def __init__(self):
-          self.vert1=[0,0]
-          self.vert2=[0,1]
-          self.orient="horz"
+     def __init__(self,x0,y0,n,orient):
+          x0=int(x0)
+          y0=int(y0)
+          n=int(n)
+          self.vert1=[x0,y0]
+          if orient == "horz":
+               self.vert2=[x0+n,y0]
+               self.orient="horz"
+          elif orient == "vert":
+               self.vert2=[x0,y0+n]
+               self.orient="vert"
+          else:
+               print("Not a valid orientation")
+          #end if
           self.comps=[]
+          self.compstr=[]
      #end __init__
      
      #set the wire size
@@ -230,21 +279,22 @@ class Wire(Component):
      def addcomp(self,obj1,obj2,x,y):
           obj1.setpos(obj2,x,y)
           s=obj1.getpos()
-          if self.orient == "horz":
-               if s[0]>=self.vert1[0] and s[0]<=self.vert2[0] and s[1]==self.vert1[1]:
-                    self.comps.append(obj1)
-               else:
-                    print("Component outside of range")
-               #end if
-          elif self.orient == "vert":
-               if s[0]==self.vert1[0] and s[1]>=self.vert1[1] and s[1]<=self.vert2[1]:
-                    self.comps.append(obj1)
-               else:
-                    print("Component outside of range")
-               #end if
-          #end if
-          
+          self.comps.append(obj1)
+          if isinstance(obj1,Resistor):
+               self.compstr.append("R")
+          elif isinstance(obj1,Inductor):
+               self.compstr.append("L")
+          elif isinstance(obj1,Capacitor):
+               self.compstr.append("C")
+          elif isinstance(obj1, VoltageSource):
+               self.compstr.append("V")
+          else:
+               print("Not a valid component type")
      #end addcomp
+     
+     def getcompstr(self):
+          return self.compstr
+     #end getcompstr
      
      #swap two components in a wire
      def swapcomp(self,i,j):

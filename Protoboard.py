@@ -138,6 +138,94 @@ class Protoboard(object):
          #end if
     #end draw wire
     
+    #draw resistor
+    def drawR(self,obj,color):
+         s=obj.getpos()
+         if color == "black":
+               self.ax.plot(s[0],s[1],"ks")
+         elif color == "red":
+               self.ax.plot(s[0],s[1],"rs")
+         elif color == "green":
+               self.ax.plot(s[0],s[1],"gs")
+         elif color == "blue":
+               self.ax.plot(s[0],s[1],"bs")
+         elif color == "cyan":
+               self.ax.plot(s[0],s[1],"cs")
+         elif color == "magenta":
+               self.ax.plot(s[0],s[1],"ms")
+         elif color == "yellow":
+               self.ax.plot(s[0],s[1],"ys")
+         else:
+              print("Invalid color")
+         #end if
+    #end drawR
+    
+    #draw inductor
+    def drawL(self,obj,color):
+         s=obj.getpos()
+         if color == "black":
+               self.ax.plot(s[0],s[1],"k^")
+         elif color == "red":
+               self.ax.plot(s[0],s[1],"r^")
+         elif color == "green":
+               self.ax.plot(s[0],s[1],"g^")
+         elif color == "blue":
+               self.ax.plot(s[0],s[1],"b^")
+         elif color == "cyan":
+               self.ax.plot(s[0],s[1],"c^")
+         elif color == "magenta":
+               self.ax.plot(s[0],s[1],"m^")
+         elif color == "yellow":
+               self.ax.plot(s[0],s[1],"y^")
+         else:
+              print("Invalid color")
+         #end if
+    #end drawL
+    
+    #draw capacitor
+    def drawC(self,obj,color):
+         s=obj.getpos()
+         if color == "black":
+               self.ax.plot(s[0],s[1],"ko")
+         elif color == "red":
+               self.ax.plot(s[0],s[1],"ro")
+         elif color == "green":
+               self.ax.plot(s[0],s[1],"go")
+         elif color == "blue":
+               self.ax.plot(s[0],s[1],"bo")
+         elif color == "cyan":
+               self.ax.plot(s[0],s[1],"co")
+         elif color == "magenta":
+               self.ax.plot(s[0],s[1],"mo")
+         elif color == "yellow":
+               self.ax.plot(s[0],s[1],"yo")
+         else:
+              print("Invalid color")
+         #end if
+    #end drawR
+    
+    #draw voltage source
+    def drawV(self,obj,color):
+         s=obj.getpos()
+         if color == "black":
+               self.ax.plot(s[0],s[1],"kx")
+         elif color == "red":
+               self.ax.plot(s[0],s[1],"rx")
+         elif color == "green":
+               self.ax.plot(s[0],s[1],"gx")
+         elif color == "blue":
+               self.ax.plot(s[0],s[1],"bx")
+         elif color == "cyan":
+               self.ax.plot(s[0],s[1],"cx")
+         elif color == "magenta":
+               self.ax.plot(s[0],s[1],"mx")
+         elif color == "yellow":
+               self.ax.plot(s[0],s[1],"yx")
+         else:
+              print("Invalid color")
+         #end if
+    #end drawR
+    
     #erases entire protoboard
     def erase(self):
           self.ax.remove()

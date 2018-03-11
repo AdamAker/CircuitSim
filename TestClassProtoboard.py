@@ -30,41 +30,19 @@ print(I)
 D=M.smul(5,I)
 print(D)
 
-G=M.domain(0,.01,1)
-print(G)
+#G=M.domain(0,.01,1)
+#print(G)
 
-wire1=cm.Wire()
-
-#test loop class
-loop1=cm.Loop()
-loop1.setloopsz(2,2,4,2)
-v=loop1.getloopsz()
-print(v)
-b.drawloop(loop1,"black")
-loop2=cm.Loop()
-loop2.setloopsz(6,4,8,8)
-w=loop2.getloopsz()
-print(w)
-b.drawloop(loop2,"red")
-
-#testing components
-r1=cm.Component()
-r1.setchar(100,.000000001,.000000001)
-r1.setpos(b,19.999999,20.034567)
-posr1=r1.getpos()
-print(posr1[0],posr1[1])
-cr1=r1.getchar()
-print(cr1[0],cr1[1],cr1[2])
 
 #testing loop
-V1=cm.VoltageSource()
-V1.setvsinu(2,"cos",60)
-V1.setpos(b,5,5)
+v1=cm.VoltageSource()
+v1.setvsinu(2,"cos",60)
+v1.setpos(b,5,5)
 
-r2=cm.Resistor()
-r2.setpmax(10)
-r2.setpos(b,10,10)
-r2.setR(10)
+r1=cm.Resistor()
+r1.setpmax(10)
+r1.setpos(b,10,10)
+r1.setR(10)
 
 c1=cm.Capacitor()
 c1.setvmax(30)
@@ -75,13 +53,31 @@ l1=cm.Inductor()
 l1.setpos(b,20,20)
 l1.setL(10e-3)
 
-wire1=cm.Wire()
-wire1.setwiresz(8,15,10,"horz")
-wire1.addcomp(V1,b,10,15)
-wire1.addcomp(r2,b,9,15)
-wire1.addcomp(l1,b,11,15)
-wire1.addcomp(c1,b,17,15)
-b.drawwire(wire1,"horz","red")
+wire1=cm.Wire(10,5,6,"horz")
+wire1.addcomp(c1,b,13,5)
+wire2=cm.Wire(16,5,6,"vert")
+wire2.addcomp(l1,b,16,8)
+wire3=cm.Wire(16,11,-6,"horz")
+wire3.addcomp(r1,b,13,11)
+wire4=cm.Wire(10,11,-6,"vert")
+wire4.addcomp(v1,b,10,8)
+loop1=cm.Loop(wire1,wire2,wire3,wire4)
+dict1=loop1.getloopstr()
+print(dict1)
+print(dict1[1][0]=="C")
+
+c=loop1.searchloop()
+print(c)
+
+#print(isinstance(r1,cm.Resistor))
+
+b.drawloop(loop1,"red")
+b.drawR(r1,"black")
+b.drawL(l1,"blue")
+b.drawC(c1,"green")
+b.drawV(v1,"magenta")
+
+
 
 #testing oscilloscope
 scope=osc.Oscilloscope()
