@@ -6,12 +6,13 @@ import Matpy as mp
 
 class Oscilloscope(object):
 
-    def __init__(self):
+    def __init__(self,l):
+        
         #initialize readings from all four probes
-        self.probe1=[0 for i in range(1000)]  #probe1
-        self.probe2=[0 for i in range(1000)]  #probe2
-        self.probe3=[0 for i in range(1000)]  #probe3
-        self.probe4=[0 for i in range(1000)]  #probe4
+        self.probe1=[0 for i in range(l)]  #probe1
+        self.probe2=[0 for i in range(l)]  #probe2
+        self.probe3=[0 for i in range(l)]  #probe3
+        self.probe4=[0 for i in range(l)]  #probe4
 
         #initialize probe locations
         self.probe1x=-1     #x coordinate of probe1  
@@ -27,10 +28,10 @@ class Oscilloscope(object):
         self.probe4y=3      #y coordinate of probe4
 
         #initialize trigger voltages for channels 1-4
-        self.trigger1=[1 for i in range(1000)]      #trigger voltage for channel1
-        self.trigger2=[1 for i in range(1000)]      #trigger voltage for channel2
-        self.trigger3=[1 for i in range(1000)]      #trigger voltage for channel3
-        self.trigger4=[1 for i in range(1000)]      #trigger voltage for channel4
+        self.trigger1=[1 for i in range(l)]      #trigger voltage for channel1
+        self.trigger2=[1 for i in range(l)]      #trigger voltage for channel2
+        self.trigger3=[1 for i in range(l)]      #trigger voltage for channel3
+        self.trigger4=[1 for i in range(l)]      #trigger voltage for channel4
 
         #initialize screen for scope object
         self.scr=plt
@@ -112,18 +113,20 @@ class Oscilloscope(object):
     #end gettrig
             
     #set screen/plot parameters
-    def setscreen(self, scaleT, scaleV, Vmax, trig=[],color=[],linetype=[], chon=[], *args):
-        p=[[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)]]
-        t=[[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)]]
-        delta=[[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)],[0 for i in range(1000)]]
-        ax=self.scr.subplot(111, facecolor='k') 
-        time=[i for i in range(1000)] 
-        self.scr.axis([0, 1000, -Vmax , Vmax])
+    def setscreen(self, scaleT, scaleV, tmax, Vmax, trig=[],color=[],linetype=[], chon=[], *args):
+        l=len(self.getprobe(1))
+        M=mp.Matpy()
+        p=[[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)]]
+        t=[[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)]]
+        delta=[[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)],[0 for i in range(l)]]
+        ax=self.scr.subplot(111, facecolor='w') 
+        time=[i for i in range(l)] 
+        self.scr.axis([0, tmax , -Vmax , Vmax])
         for j in range(4):
           p[j]=self.getprobe(j+1)
           t[j]=self.gettrig(j+1)
           self.scr.plot([1,1,1], label="probe"+ " " +str(j+1))
-          for k in range(1000):
+          for k in range(l):
                if trig[j]:
                     if p[j][k]>t[j][k]:
                          delta[j][k]=p[j][k]

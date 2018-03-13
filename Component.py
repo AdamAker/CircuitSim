@@ -1,6 +1,7 @@
 import Protoboard as pb
 import numpy as np
 import cmath as c
+import Matpy as mp
 
 class Component(object):
 
@@ -148,12 +149,19 @@ class VoltageSource(Component):
                self.source=[Vpp*np.cos(2*(3.141592654)*f*t) for t in range(1000)]
           elif type == "sin":
                self.source=[Vpp*np.sin(2*(3.141592654)*f*t) for t in range(1000)]
+          elif type == "const":
+               self.source=[Vpp for t in range(1000)]
           else:
                print("type is not sinusoidal")
     #end setv
     
     #def setvsqr(self, Vpp, dcycle, T):
     #for t in range(1000):
+    
+    #get the voltage source
+    def getvsource(self):
+          return self.source
+    #end getvsource
 
 ##--Loop subclass--##
     
@@ -176,6 +184,13 @@ class Loop(Component):
           self.R=0
           self.L=0
           self.C=0
+          self.V=[]
+          self.i=[]
+          self.q=[]
+          self.didt=[]
+          self.VC=[]
+          self.VR=[]
+          self.VL=[]
      #end __init__
 
      #resizes and repositions the loop (based on self.vert1)
@@ -210,12 +225,53 @@ class Loop(Component):
                          else:
                               self.C=1/(1/(self.C)+1/(self.loop[i+1].comps[j].getC()))
                          #end if
+                    elif self.loopstr[i+1][j]=="V":
+                         self.V=self.loop[i+1].comps[j].getvsource()
                     #end if
                #end for     
           #end for
-          return [self.R, self.L, self.C]
+          return [self.R, self.L, self.C, self.V]
      #end search loop
      
+     #solve the loop
+     def loopsolver(self,i0,q0,dt,tmax, *args):
+          c=self.searchloop()
+          M=mp.Matpy()
+          t=M.domain(0,dt,tmax)
+          dt=t[1]-t[0]
+          self.didt=[0 for k in range(len(c[3]))]
+          self.i=[0 for k in range(len(c[3]))]
+          self.q=[0 for k in range(len(c[3]))]
+          if c[1]==0:
+               self.q[0]=q0
+               for l in range(len(c[3])-1):
+                    self.i[l]=-1*(1/(c[0]*c[2]))*self.q[l]+(1/c[0])*c[3][l]
+                    self.q[l+1]=self.q[l]+(c[2]*c[0])*self.i[l]*dt
+               #end for
+          elif c[2]==0:
+               self.i[0]=i0
+               for l in range(len(c[3])-1):
+                    self.didt[l]=-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
+                    self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt
+               #end for
+          elif c[0]==0:
+               self.q[0]=q0
+               self.i[0]=i0
+               for l in range(len(c[3])-1):
+                    self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+(1/c[1])*c[3][l]
+                    self.q[l+1]=self.q[l]+(c[2]*c[1])*self.didt[l]*dt*dt
+               #end for
+          else:
+               self.q[0]=q0
+               self.i[0]=i0
+               for l in range(len(c[3])-1):
+                    self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
+                    self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt
+                    self.q[l+1]=self.q[l]+(c[2]*c[0])*self.i[l]*dt
+               #end for
+          #end if
+               
+     #end loopsolver
      #gets loop verticies
      def getloopsz(self):
           return [self.vert1,self.vert2,self.vert3,self.vert4]
@@ -228,6 +284,27 @@ class Loop(Component):
      def getloop(self):
           return self.loop
      #end getloop  
+     
+     def getloopatr(self):
+          return [self.didt, self.i, self.q]
+     #end getloopatr
+     
+     def getloopv(self):
+          for j in range(len(self.didt)):
+               self.VL.append(self.L*self.didt[j])
+          #end for
+          for j in range(len(self.i)):
+               self.VR.append(self.R*self.i[j])
+          #end for
+          for j in range(len(self.q)):
+               if self.C!=0:
+                    self.VC.append((1/self.C)*self.q[j])
+               else:
+                    self.VC.append(0)
+          #end for
+          
+          return [self.VL,self.VR,self.VC,self.V]
+     #end getloopv
      
 ##--Wire subclass--##
      
