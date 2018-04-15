@@ -243,27 +243,28 @@ class Loop(Component):
           self.i=[0 for k in range(len(c[3]))]
           self.q=[0 for k in range(len(c[3]))]
           if c[1]==0:
-               self.q[0]=q0
+               self.q[0]=q0/2
                for l in range(len(c[3])-1):
                     self.i[l]=-1*(1/(c[0]*c[2]))*self.q[l]+(1/c[0])*c[3][l]
                     self.q[l+1]=self.q[l]+(c[2]*c[0])*self.i[l]*dt
                #end for
           elif c[2]==0:
-               self.i[0]=i0
+               self.i[0]=i0/2
                for l in range(len(c[3])-1):
                     self.didt[l]=-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
                     self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt
                #end for
           elif c[0]==0:
-               self.q[0]=q0
-               self.i[0]=i0
+               self.q[0]=q0/2
+               self.i[0]=i0/2
                for l in range(len(c[3])-1):
                     self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+(1/c[1])*c[3][l]
-                    self.q[l+1]=self.q[l]+(c[2]*c[1])*self.didt[l]*dt*dt
+                    self.i[l+1]=self.i[l]+c[1]*self.didt[l]*dt
+                    self.q[l+1]=self.q[l]+c[2]*self.i[l]*dt
                #end for
           else:
-               self.q[0]=q0
-               self.i[0]=i0
+               self.q[0]=q0/2
+               self.i[0]=i0/2
                for l in range(len(c[3])-1):
                     self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
                     self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt

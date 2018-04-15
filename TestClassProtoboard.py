@@ -38,13 +38,13 @@ b.setboard()
 
 #testing components
 v1=cm.VoltageSource()
-v1.setvsinu(0,"const",1/50)
+v1.setvsinu(1,"const",1/(60))
 v1.setpos(b,5,5)
 
 r1=cm.Resistor()
 r1.setpmax(10)
 r1.setpos(b,10,10)
-r1.setR(1e6)
+r1.setR(10)
 
 c1=cm.Capacitor()
 c1.setvmax(30)
@@ -53,7 +53,7 @@ c1.setC(1e-6)
 
 l1=cm.Inductor()
 l1.setpos(b,20,20)
-l1.setL(1e-3)
+l1.setL(1e-6)
 
 wire1=cm.Wire(10,5,6,"horz")
 wire1.addcomp(c1,b,13,5)
@@ -70,8 +70,9 @@ dict1=loop1.getloopstr()
 
 c=loop1.searchloop()
 #print(c)
-loop1.loopsolver(0,5e-7,.1,1000)
+loop1.loopsolver(0,2e-6,.1,1000)
 s=loop1.getloopv()
+
 l=len(s[0])
 scope1=osc.Oscilloscope(l)
 scope1.setprobe(1,s[0])
@@ -79,10 +80,10 @@ scope1.setprobe(2,s[1])
 scope1.setprobe(3,s[2])
 scope1.setprobe(4,s[3])
 trig=[False,False,False,False]
-color=["blue","yellow","green","red"]
+color=["blue","black","green","red"]
 linetype=["-","-.","-",":"]
 chon=[True,True,True,True]
-scope1.setscreen("s","V",300,2.5,trig,color,linetype,chon)
+scope1.setscreen("s","V",200,2.5,trig,color,linetype,chon)
 
 #print(isinstance(r1,cm.Resistor))
 

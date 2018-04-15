@@ -28,10 +28,10 @@ class Oscilloscope(object):
         self.probe4y=3      #y coordinate of probe4
 
         #initialize trigger voltages for channels 1-4
-        self.trigger1=[1 for i in range(l)]      #trigger voltage for channel1
-        self.trigger2=[1 for i in range(l)]      #trigger voltage for channel2
-        self.trigger3=[1 for i in range(l)]      #trigger voltage for channel3
-        self.trigger4=[1 for i in range(l)]      #trigger voltage for channel4
+        self.trigger1=[0 for i in range(l)]      #trigger voltage for channel1
+        self.trigger2=[0 for i in range(l)]      #trigger voltage for channel2
+        self.trigger3=[0 for i in range(l)]      #trigger voltage for channel3
+        self.trigger4=[0 for i in range(l)]      #trigger voltage for channel4
 
         #initialize screen for scope object
         self.scr=plt
@@ -125,7 +125,6 @@ class Oscilloscope(object):
         for j in range(4):
           p[j]=self.getprobe(j+1)
           t[j]=self.gettrig(j+1)
-          self.scr.plot([1,1,1], label="probe"+ " " +str(j+1))
           for k in range(l):
                if trig[j]:
                     if p[j][k]>t[j][k]:
@@ -138,97 +137,97 @@ class Oscilloscope(object):
                #end if
                
           #end for
-               
+             
         #end for
         labels=[0,0,0,0]
         for j in range(4):
              if chon[j]:
                   if color[j] == "red":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'r:')
+                         labels[j]=self.scr.plot(delta[j], 'r:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'r-.')
+                         labels[j]=self.scr.plot(delta[j], 'r-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'r--')
+                         labels[j]=self.scr.plot(delta[j], 'r--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'r-')
+                         labels[j]=self.scr.plot(delta[j], 'r-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "blue":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'b:')
+                         labels[j]=self.scr.plot(delta[j], 'b:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'b-.')
+                         labels[j]=self.scr.plot(delta[j], 'b-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'b--')
+                         labels[j]=self.scr.plot(delta[j], 'b--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'b-')
+                         labels[j]=self.scr.plot(delta[j], 'b-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "cyan":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'c:')
+                         labels[j]=self.scr.plot(delta[j], 'c:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'c-.')
+                         labels[j]=self.scr.plot(delta[j], 'c-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'c--')
+                         labels[j]=self.scr.plot(delta[j], 'c--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'c-')
+                         labels[j]=self.scr.plot(delta[j], 'c-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "green":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'g:')
+                         labels[j]=self.scr.plot(delta[j], 'g:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'g-.')
+                         labels[j]=self.scr.plot(delta[j], 'g-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'g--')
+                         labels[j]=self.scr.plot(delta[j], 'g--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'g-')
+                         labels[j]=self.scr.plot(delta[j], 'g-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "yellow":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'y:')
+                         labels[j]=self.scr.plot(delta[j], 'y:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'y-.')
+                         labels[j]=self.scr.plot(delta[j], 'y-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'y--')
+                         labels[j]=self.scr.plot(delta[j], 'y--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'y-')
+                         labels[j]=self.scr.plot(delta[j], 'y-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "black":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'k:')
+                         labels[j]=self.scr.plot(delta[j], 'k:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'k-.')
+                         labels[j]=self.scr.plot(delta[j], 'k-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'k--')
+                         labels[j]=self.scr.plot(delta[j], 'k--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'k-')
+                         labels[j]=self.scr.plot(delta[j], 'k-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "magenta":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'm:')
+                         labels[j]=self.scr.plot(delta[j], 'm:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'm-.')
+                         labels[j]=self.scr.plot(delta[j], 'm-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'm--')
+                         labels[j]=self.scr.plot(delta[j], 'm--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'm-')
+                         labels[j]=self.scr.plot(delta[j], 'm-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   elif color[j] == "white":
                       if linetype[j] == ":":
-                         labels[j]=self.scr.plot(delta[j], 'w:')
+                         labels[j]=self.scr.plot(delta[j], 'w:', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-.":
-                         labels[j]=self.scr.plot(delta[j], 'w-.')
+                         labels[j]=self.scr.plot(delta[j], 'w-.', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "--":
-                         labels[j]=self.scr.plot(delta[j], 'w--')
+                         labels[j]=self.scr.plot(delta[j], 'w--', label="probe"+ " " +str(j+1))
                       elif linetype[j] == "-":
-                         labels[j]=self.scr.plot(delta[j], 'w-')
+                         labels[j]=self.scr.plot(delta[j], 'w-', label="probe"+ " " +str(j+1))
                       else:
                          print("Invalid line type")
                   else:
