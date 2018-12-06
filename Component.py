@@ -2,6 +2,7 @@ import Protoboard as pb
 import numpy as np
 import cmath as c
 import Matpy as mp
+import math as m
 
 class Component(object):
 
@@ -144,19 +145,53 @@ class VoltageSource(Component):
         self.source=[0 for i in range(1000)]
     #end __init__
     
-    def setvsinu(self, Vpp, type, f):
+    #set a sinusoidal voltage source
+    def setvsin(self, Vpp, type, f,tmax):
           if type == "cos":
-               self.source=[Vpp*np.cos(2*(3.141592654)*f*t) for t in range(1000)]
+               self.source=[Vpp*np.cos(2*(3.141592654)*f*t) for t in range(tmax)]
           elif type == "sin":
-               self.source=[Vpp*np.sin(2*(3.141592654)*f*t) for t in range(1000)]
-          elif type == "const":
-               self.source=[Vpp for t in range(1000)]
+               self.source=[Vpp*np.sin(2*(3.141592654)*f*t) for t in range(tmax)]
           else:
                print("type is not sinusoidal")
+    
     #end setv
     
-    #def setvsqr(self, Vpp, dcycle, T):
-    #for t in range(1000):
+    #set a general DC voltage source
+    def setvDC(self, Vpp, type, duty, N, tmax):
+        if type == "const":
+            self.source=[Vpp for t in range(tmax)]
+        elif type == "sqfall":
+             self.source=[0 for t in range(tmax)]
+             for i in range(N):
+                 for j in range(m.floor(tmax/N)):
+                     if j<=m.floor(duty*(tmax/N)):
+                        self.source[i*N+j]=Vpp
+                     #endif
+                 #endfor
+             #endfor
+        elif type == "sqrise":
+               self.source=[0 for t in range(tmax)]
+               for i in range(N):
+                   for j in range(m.floor(tmax/N)):
+                       if j>m.floor(duty*(tmax/N)):
+                           self.source[i*N+j]=Vpp
+                       #endif
+                   #endfor
+               #endfor
+        #endif
+    #end setvDC
+    
+    #setvPulse(self, Vpp, type, deltaT, tmax)
+    def setvPulse(self, Vpp, type, deltaT, t0, tmax):
+        self.source=[0 for t in range(tmax)]
+        if type == "sq":
+            for i in range(deltaT):
+                self.source[t0+i]=Vpp
+            #endfor
+        #elif type == "gauss":
+            #self.source=[Vpp*np.exp(-(t+t0)) for t in range(tmax-t0)]
+        #endif
+    #endsetvPulse
     
     #get the voltage source
     def getvsource(self):
@@ -238,7 +273,6 @@ class Loop(Component):
           c=self.searchloop()
           M=mp.Matpy()
           t=M.domain(0,dt,tmax)
-          dt=t[1]-t[0]
           self.didt=[0 for k in range(len(c[3]))]
           self.i=[0 for k in range(len(c[3]))]
           self.q=[0 for k in range(len(c[3]))]
@@ -246,29 +280,35 @@ class Loop(Component):
                self.q[0]=q0/2
                for l in range(len(c[3])-1):
                     self.i[l]=-1*(1/(c[0]*c[2]))*self.q[l]+(1/c[0])*c[3][l]
-                    self.q[l+1]=self.q[l]+(c[2]*c[0])*self.i[l]*dt
+                    self.q[l+1]=self.q[l]+self.i[l]
+                    #(1/(c[0]*c[2])) is the 1/(tauRC)=1/RC for the RC circuit
+                    #and so must multiply the current in order to modify the
+                    #voltage rate of decay.
                #end for
           elif c[2]==0:
                self.i[0]=i0/2
                for l in range(len(c[3])-1):
                     self.didt[l]=-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
-                    self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt
+                    self.i[l+1]=self.i[l]+self.didt[l]
+                    #(c[0]/(c[2])) is the 1/(tauRL)=R/L for the RL circuit
+                    #and so must multiply the current in order to modify the
+                    #voltage rate of decay.
                #end for
           elif c[0]==0:
                self.q[0]=q0/2
                self.i[0]=i0/2
                for l in range(len(c[3])-1):
                     self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+(1/c[1])*c[3][l]
-                    self.i[l+1]=self.i[l]+c[1]*self.didt[l]*dt
-                    self.q[l+1]=self.q[l]+c[2]*self.i[l]*dt
+                    self.i[l+1]=self.i[l]+self.didt[l]
+                    self.q[l+1]=self.q[l]+self.i[l+1]
                #end for
           else:
                self.q[0]=q0/2
                self.i[0]=i0/2
                for l in range(len(c[3])-1):
-                    self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]+-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
-                    self.i[l+1]=self.i[l]+(c[1]/c[0])*self.didt[l]*dt
-                    self.q[l+1]=self.q[l]+(c[2]*c[0])*self.i[l]*dt
+                    self.didt[l]=-1*(1/(c[1]*c[2]))*self.q[l]-1*(c[0]/c[1])*self.i[l]+(1/c[1])*c[3][l]
+                    self.i[l+1]=self.i[l]+self.didt[l]
+                    self.q[l+1]=self.q[l]+self.i[l+1]
                #end for
           #end if
                

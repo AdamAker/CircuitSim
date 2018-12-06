@@ -8,8 +8,8 @@ from matplotlib import pyplot as plt
 
 
 #testing protoboard
-n=25
-m=50
+n=15
+m=20
 b=pb.Protoboard()
 s=b.regrid(n,m)
 b.setboard()
@@ -37,23 +37,26 @@ b.setboard()
 
 
 #testing components
+tmax=100
 v1=cm.VoltageSource()
-v1.setvsinu(1,"const",1/(60))
+#v1.setvsin(1,"sin",1/(9),tmax)
+v1.setvDC(5,"sqfall",.4,10,tmax)
+#v1.setvPulse(5,"sq",10,70,tmax)
 v1.setpos(b,5,5)
 
 r1=cm.Resistor()
 r1.setpmax(10)
 r1.setpos(b,10,10)
-r1.setR(10)
+r1.setR(6)#10RC
 
 c1=cm.Capacitor()
 c1.setvmax(30)
 c1.setpos(b,15,15)
-c1.setC(1e-6)
+c1.setC(1)#1RC,RL
 
 l1=cm.Inductor()
 l1.setpos(b,20,20)
-l1.setL(1e-6)
+l1.setL(10)#10RL
 
 wire1=cm.Wire(10,5,6,"horz")
 wire1.addcomp(c1,b,13,5)
@@ -70,7 +73,7 @@ dict1=loop1.getloopstr()
 
 c=loop1.searchloop()
 #print(c)
-loop1.loopsolver(0,2e-6,.1,1000)
+loop1.loopsolver(0,5,.01,tmax)#5V
 s=loop1.getloopv()
 
 l=len(s[0])
@@ -79,15 +82,16 @@ scope1.setprobe(1,s[0])
 scope1.setprobe(2,s[1])
 scope1.setprobe(3,s[2])
 scope1.setprobe(4,s[3])
+#scope1.settrig(1,s[3])
 trig=[False,False,False,False]
 color=["blue","black","green","red"]
 linetype=["-","-.","-",":"]
 chon=[True,True,True,True]
-scope1.setscreen("s","V",200,2.5,trig,color,linetype,chon)
+scope1.setscreen("s","V",tmax,10,trig,color,linetype,chon)
 
 #print(isinstance(r1,cm.Resistor))
 
-b.drawloop(loop1,"red")
+b.drawloop(loop1,"black")
 b.drawR(r1,"black")
 b.drawL(l1,"blue")
 b.drawC(c1,"green")
