@@ -40,7 +40,7 @@ b.setboard()
 tmax=100
 v1=cm.VoltageSource()
 #v1.setvsin(1,"sin",1/(9),tmax)
-v1.setvDC(5,"sqfall",.4,10,tmax)
+v1.setvDC(7.5,"sqfall",.4,10,tmax)
 #v1.setvPulse(5,"sq",10,70,tmax)
 v1.setpos(b,5,5)
 
@@ -86,7 +86,7 @@ scope1.setprobe(4,s[3])
 trig=[False,False,False,False]
 color=["blue","black","green","red"]
 linetype=["-","-.","-",":"]
-chon=[True,True,True,True]
+chon=[False,True,True,True]
 scope1.setscreen("s","V",tmax,10,trig,color,linetype,chon)
 
 #print(isinstance(r1,cm.Resistor))

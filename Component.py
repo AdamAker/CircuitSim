@@ -163,18 +163,18 @@ class VoltageSource(Component):
         elif type == "sqfall":
              self.source=[0 for t in range(tmax)]
              for i in range(N):
-                 for j in range(m.floor(tmax/N)):
-                     if j<=m.floor(duty*(tmax/N)):
-                        self.source[i*N+j]=Vpp
+                 for j in range(int(tmax/N)):
+                     if j<=int(duty*(tmax/N)):
+                        self.source[i*int(tmax/N)+j]=Vpp
                      #endif
                  #endfor
              #endfor
         elif type == "sqrise":
                self.source=[0 for t in range(tmax)]
                for i in range(N):
-                   for j in range(m.floor(tmax/N)):
-                       if j>m.floor(duty*(tmax/N)):
-                           self.source[i*N+j]=Vpp
+                   for j in range(int(tmax/N)):
+                       if j>int(duty*(tmax/N)):
+                           self.source[i*int(tmax/N)+j]=Vpp
                        #endif
                    #endfor
                #endfor
